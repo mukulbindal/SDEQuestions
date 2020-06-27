@@ -1,0 +1,104 @@
+// Excel Column number
+class Solution {
+public:
+    // So basicaly we need to find the lexicographic index
+    // of the given string in [A-Z] alphabet
+    int titleToNumber(string s) {
+        //Observe this:
+        // 1 = 1, 2 = 2 , .. 100 = 100, 248 = 248
+        // How do we get here?
+        // 248 = 2*10^2 + 4*10^1 + 8*10^0
+        // What is 10 here? Its the base.
+        // For [A-Z], base is 26
+        // Hence replace 10 by 26 in above logic
+        int ans=0;
+        for(int i=0,n=s.length();i<n;++i)
+        {
+            ans += pow(26,n-i-1)*(s[i]-64);
+        }
+        return ans;
+        
+    }
+};
+
+// pow x^n in log(n) time
+class Solution {
+public:
+    double myPow(double x, long long n) {
+        // if(x==1)return 1;
+        if(n==0)return 1.0;
+        if(n<0)return 1.0/myPow(x,-n);
+        if(n==1){
+            return x;
+        }
+        if(n&1){
+            double xx = myPow(x,n/2);
+            return xx*xx*x;
+        }else{
+            double xx = myPow(x,n/2);
+            return xx*xx;
+        }
+    }
+};	
+
+// Count Trailing zeroes
+class Solution {
+public:
+    int trailingZeroes(int n) {
+        if(n==0)return 0;
+        return n/5 + trailingZeroes(n/5);
+    }
+};
+
+
+// Count trailing zeroes, a naive approach
+class Solution {
+public:
+    int trailingZeroes(int n) {
+        int count2=0,count5=0,i;
+        int p = 1;
+        while(true){
+            double x = pow(2,p);
+            if(x<=n){
+            count2 += n/pow(2,p);
+            p++;
+            }else break;
+        }
+        p=1;
+        while(true){
+            double x = pow(5,p);
+            if(x<=n){
+            count5 += n/pow(5,p);
+            p++;
+            }else break;
+        }
+       return min(count2,count5);
+    }
+};
+
+// Euclid and Extended Euclid Algo for reference; Hope you memorize it.
+int gcd(int a, int b) 
+{ 
+    if (b == 0) 
+        return a; 
+    return gcd(b,a%b); 
+} 
+
+
+int gcd(int a, int b, int& x, int& y) {    // extended
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    int x1, y1;
+    int gcd = gcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - y1 * (a / b);
+    return gcd;
+}
+
+// Grid Unique Paths
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        return factorial(m+n-2)//factorial(m-1)//factorial(n-1)

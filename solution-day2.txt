@@ -1,0 +1,222 @@
+// set matrix zero.
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        int i=0,j=0,n=matrix.size(),m=matrix[0].size();
+        bool c=false;
+        for(i=0;i<n;i++)
+        {
+            if(matrix[i][0] == 0)
+            {
+                c=true;
+            }
+            for(j=1;j<m;j++)
+            {
+                if(!matrix[i][j])
+                {
+                    matrix[i][0] = matrix[0][j] = 0;
+                }
+            }
+        }
+        
+        for(i=1;i<n;i++)
+        {
+            for(j=1;j<m;j++)
+            {
+                if(matrix[i][0] == 0 || matrix[0][j]==0){
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        
+        if(matrix[0][0]==0)
+        {
+            for(j=0;j<m;j++)
+                matrix[0][j] = 0;
+        }
+        
+        if(c){
+            for(i=0;i<n;i++)
+            {
+                matrix[i][0]=0;
+            }
+        }
+        
+    }
+};
+
+
+
+// Pascal Triangle
+class Solution:
+    def generate(self, numRows: int) -> List[List[int]]:
+        l = []
+        for i in range(numRows):
+            l.append([1]*(i+1))
+        for i in range(2,numRows):
+            for j in range(1,len(l[i-1])):
+                l[i][j] = l[i-1][j-1] + l[i-1][j]
+        return l
+
+
+
+// Next Permutation
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int i=0,n=nums.size(),k=-1;
+        for(i=n-2;i>=0;i--)
+        {
+            if(nums[i]<nums[i+1]){
+                k = i;
+                break;
+            }
+        }
+        if(k==-1)
+        {
+            sort(nums.begin(),nums.end());
+        }
+        else{
+            int j,diff=INT_MAX;
+            for(i=n-1;i>k;i--)
+            {
+                if(nums[i]>nums[k] and nums[i]-nums[k]<diff)
+                {
+                    diff = nums[i] - nums[k];
+                    j = i;
+                }
+            }
+            swap(nums[k],nums[j]);
+            sort(nums.begin()+k+1,nums.end());
+        }
+        
+        
+    }
+};
+
+// Inversion Count using merge sort
+
+class Solution {
+public:
+    int globalinversion=0;
+    void merge(vector<int>& A , int l , int mid , int r)
+    {
+        vector<int> temp(r-l+1);
+        int i=l,j=mid+1,k=0;
+        while(i<=mid and j<=r){
+            if(A[i]<=A[j]){
+                temp[k++] = A[i++];
+            }else{
+                temp[k++] = A[j++];
+                globalinversion += mid-i+1;
+            }
+        }
+        
+        while(i<=mid)temp[k++]=A[i++];
+        while(j<=r)temp[k++]=A[j++];
+        for(k=0;k<r-l+1;k++){
+            A[l+k] = temp[k];
+        }
+    }
+    void mergeSort(vector<int>& A , int l , int r)
+    {
+        if (l==r)return;
+        int mid = (l+r)/2;
+        mergeSort(A,l,mid);
+        mergeSort(A,mid+1,r);
+        merge(A,l,mid,r);
+        
+    }
+    bool isIdealPermutation(vector<int>& A) {
+        int localinversion=0,i,n= A.size();
+        for(i=0;i<n-1;i++)if(A[i]>A[i+1])localinversion++;
+        mergeSort(A,0,n-1);
+        return (localinversion == globalinversion);
+    }
+};
+
+// Inversion Count for Array [0,1...N-1]
+class Solution {
+public:
+
+    bool isIdealPermutation(vector<int>& A) {
+        for(int i=0,n=A.size();i<n;i++)
+            if(A[i]!=i && A[i]!=i+1 && A[i]!=i-1)return false; // Can also use condition => [abs(A[i]-i)>1]
+        return true;
+        
+        
+    }
+};
+
+// Buy and Sell stock
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int i,n=prices.size(),minsofar=INT_MAX,ans=0;
+        for(i=0;i<n;i++)
+        {
+            if(prices[i]<minsofar){
+                minsofar = prices[i];
+            }
+            ans = max(ans,prices[i] - minsofar);
+        }
+        return ans;
+        
+    }
+};
+
+// Buy and Sell stock with multiple transactions
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int i,n=prices.size(),ans=0,start = 0;
+        for(i=1;i<n;i++)
+        {
+            if(prices[i]<prices[i-1])
+            {
+                ans += prices[i-1] - prices[start];
+                start = i;
+            }
+            if(i==n-1)
+            {
+                ans+=max(0,prices[i] - prices[start]);
+            }
+        }
+        return ans;
+        
+    }
+};
+
+// Rotate NxN matrix by 90 degree.
+class Solution {
+public:
+    // I already know the solution. We just need to 
+    //transpose the matrix and find the mirror image
+    // about the mid Y axis
+    void rotate(vector<vector<int>>& matrix) {
+        int i=0,j=0,n=matrix.size();
+        // Taking transpose of this matrix
+        // ie swap the upper and lower triangle
+        for(i=1;i<n;++i)
+        {
+            for(j=0;j<i;++j)
+            {
+                swap(matrix[i][j],matrix[j][i]);
+            }
+        }
+                     
+        // Now simply take the mirror image 
+        // ie go upto mid, swap first,last & second,
+        // second last.....upto mid
+                     
+        for(i=0;i<n;i++){
+            for(j=0;j<n/2;++j)
+            {
+                swap(matrix[i][j],matrix[i][n-j-1]);
+            }
+        }
+    }
+};
+
+
+
